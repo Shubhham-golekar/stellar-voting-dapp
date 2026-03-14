@@ -46,8 +46,10 @@ function App() {
         ) : (
           <div className="wallet-info">
             <span className="network-badge">TESTNET</span>
-            <span className="address" title={publicKey}>
-              {publicKey.substring(0, 6)}...{publicKey.substring(publicKey.length - 4)}
+            <span className="address" title={typeof publicKey === 'string' ? publicKey : 'Connected'}>
+              {typeof publicKey === 'string' && publicKey.length >= 10
+                ? `${publicKey.substring(0, 6)}...${publicKey.substring(publicKey.length - 4)}`
+                : 'Connected'}
             </span>
           </div>
         )}

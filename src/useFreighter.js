@@ -28,10 +28,18 @@ export function useFreighter() {
             }
 
             const accessResponse = await requestAccess();
-            if (accessResponse) {
-                setPublicKey(accessResponse);
+
+            if (accessResponse && accessResponse.error) {
+                console.error('Freighter connection error:', accessResponse.error);
+                return null;
+            }
+
+            const key = typeof accessResponse === 'string' ? accessResponse : (accessResponse?.address || accessResponse?.publicKey || null);
+
+            if (key) {
+                setPublicKey(key);
                 setIsConnected(true);
-                return accessResponse;
+                return key;
             }
         } catch (e) {
             console.error('Failed to connect to Freighter:', e);
