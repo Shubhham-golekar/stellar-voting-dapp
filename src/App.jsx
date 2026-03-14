@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useFreighter } from './useFreighter'
+import * as StellarSdk from '@stellar/stellar-sdk'
 import './index.css'
 
 const CANDIDATES = [
@@ -14,23 +15,41 @@ function App() {
   const [voteStatus, setVoteStatus] = useState(null)
 
   const handleVote = async () => {
-    if (!selectedCandidate) return
+    if (!selectedCandidate || typeof publicKey !== 'string') return
 
     setVoteStatus('constructing')
-    // Simulate transaction construction and signing for the mini-dApp
-    // In a real dApp, we would build a Soroban or Stellar transaction here
     try {
-      // Create a dummy XDR to pass to Freighter to sign (for demo purposes)
-      // For real usage, you would use StellarSdk.TransactionBuilder
+      const candidateInfo = CANDIDATES.find(c => c.id === selectedCandidate);
+
+      // Use a dummy account sequence to construct the XDR just to prompt the wallet
+      const dummyAccount = new StellarSdk.Account(publicKey, "0");
+
+      const transaction = new StellarSdk.TransactionBuilder(dummyAccount, {
+        fee: StellarSdk.BASE_FEE,
+        networkPassphrase: StellarSdk.Networks.TESTNET,
+      })
+        .addOperation(StellarSdk.Operation.payment({
+          destination: publicKey, // send to self
+          asset: StellarSdk.Asset.native(),
+          amount: "0.0000001",
+        }))
+        .addMemo(StellarSdk.Memo.text(`Vote: ${candidateInfo.id}`))
+        .setTimeout(30)
+        .build();
+
+      const xdr = transaction.toXDR();
       setVoteStatus('signing')
 
-      // Simulate network delay for demo
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const signedTransactionResponse = await signTx(xdr, 'TESTNET');
 
-      // Assume successful vote for demo
+      if (!signedTransactionResponse || signedTransactionResponse.error) {
+        setVoteStatus('error');
+        return;
+      }
+
       setVoteStatus('success')
     } catch (e) {
-      console.error(e)
+      console.error('Error constructing or signing transaction:', e)
       setVoteStatus('error')
     }
   }
