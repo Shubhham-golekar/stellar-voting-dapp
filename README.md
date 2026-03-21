@@ -164,6 +164,12 @@ Watch the full walkthrough of the dApp in action:
 
 👉 **[Watch on Loom](https://www.loom.com/share/bb83b9a7a88b4eb8a2706fb4177fbacd)**
 
+
+## 🔗 Live Deploy 
+
+👉 **[Voting-DApp](stellar-voting-dapp-pc69.vercel.app)**
+
+
 ---
 
 ## ⚠️ Notes
