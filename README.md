@@ -167,7 +167,7 @@ Watch the full walkthrough of the dApp in action:
 
 ## 🔗 Live Deploy 
 
-👉 **[Voting-DApp](stellar-voting-dapp-pc69.vercel.app)**
+👉 (stellar-voting-dapp-pc69.vercel.app)**
 
 
 ---
